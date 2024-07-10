@@ -1,0 +1,172 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+class Book {
+    private String title;
+    private String author;
+    private double price;
+
+    public Book(String title, String author, double price) {
+        this.title = title;
+        this.author = author;
+        this.price = price;
+    }
+
+    // Getters and setters
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+}
+
+class Customer {
+    private String name;
+    private String email;
+    private List<Book> shoppingCart;
+
+    public Customer(String name, String email) {
+        this.name = name;
+        this.email = email;
+        this.shoppingCart = new ArrayList<>();
+    }
+
+    // Getters and setters
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Book> getShoppingCart() {
+        return shoppingCart;
+    }
+
+    public void addToCart(Book book) {
+        shoppingCart.add(book);
+    }
+
+    public void removeFromCart(Book book) {
+        shoppingCart.remove(book);
+    }
+}
+
+class Order {
+    private Customer customer;
+    private List<Book> books;
+    private double totalAmount;
+
+    public Order(Customer customer, List<Book> books) {
+        this.customer = customer;
+        this.books = books;
+        this.totalAmount = calculateTotalAmount();
+    }
+
+    // Getters
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    private double calculateTotalAmount() {
+        double total = 0;
+        for (Book book : books) {
+            total += book.getPrice();
+        }
+        return total;
+    }
+}
+
+class Bookstore {
+    private Map<String, Book> bookInventory;
+    private List<Customer> customers;
+    private List<Order> orders;
+
+    public Bookstore() {
+        this.bookInventory = new HashMap<>();
+        this.customers = new ArrayList<>();
+        this.orders = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        bookInventory.put(book.getTitle(), book);
+    }
+
+    public void removeBook(Book book) {
+        bookInventory.remove(book.getTitle());
+    }
+
+    public void addCustomer(Customer customer) {
+        customers.add(customer);
+    }
+
+    public void placeOrder(Customer customer, List<Book> books) {
+        Order order = new Order(customer, books);
+        orders.add(order);
+    }
+
+    // Other methods for browsing books, generating invoices, etc.
+}
+
+public class OnlineBookstoreApplication {
+    public static void main(String[] args) {
+        Bookstore bookstore = new Bookstore();
+
+        // Add books to the inventory
+        Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 10.99);
+        Book book2 = new Book("To Kill a Mockingbird", "Harper Lee", 9.99);
+        bookstore.addBook(book1);
+        bookstore.addBook(book2);
+
+        // Create a customer
+        Customer customer = new Customer("John Doe", "john.doe@example.com");
+        bookstore.addCustomer(customer);
+
+        // Add books to the customer's shopping cart
+        customer.addToCart(book1);
+        customer.addToCart(book2);
+
+        // Place an order
+        List<Book> booksInCart = customer.getShoppingCart();
+        bookstore.placeOrder(customer, booksInCart);
+
+        // Generate an invoice for the order
+        Order order = bookstore.getOrders().get(0);
+        double totalAmount = order.getTotalAmount();
+        System.out.println("Invoice for Order #1:");
+        System.out.println("Customer: " + order.getCustomer().getName());
+        System.out.println("Total Amount: $" + totalAmount);
+    }
+}
